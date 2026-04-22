@@ -17,18 +17,60 @@ body {
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 1rem;
+  border-radius: 2rem;
   z-index: 10;
 }
 
-/* Custom popup styling */
-.leaflet-popup-content-wrapper {
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+/* Custom heart marker animation */
+.heart-marker {
+  position: relative;
+  animation: heartPulse 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 4px 6px rgba(244, 63, 94, 0.3));
 }
-.leaflet-popup-tip {
-  background-color: rgba(255, 255, 255, 0.95);
+
+.heart-shadow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  filter: blur(2px);
+  z-index: -1;
+}
+
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Cute popup styling */
+.cute-popup .leaflet-popup-content-wrapper {
+  background-color: rgba(255, 250, 252, 0.98);
+  border-radius: 1.5rem;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(251, 113, 133, 0.15), 0 10px 10px -5px rgba(251, 113, 133, 0.1);
+  border: 2px solid white;
+}
+
+.cute-popup .leaflet-popup-content {
+  margin: 0;
+  width: 240px !important; /* Đảm bảo chiều rộng đủ để không bị móp ảnh */
+}
+
+.cute-popup .leaflet-popup-tip {
+  background-color: rgba(255, 250, 252, 0.98);
+}
+
+.cute-popup .leaflet-popup-close-button {
+  top: 8px;
+  right: 8px;
+  color: #fb7185 !important;
+  font-size: 16px !important;
 }
 
 @keyframes spin-slow {

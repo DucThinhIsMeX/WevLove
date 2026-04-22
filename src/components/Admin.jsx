@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMemories, getLocations, addMemory, updateMemory, deleteMemory, addLocation, updateLocation, deleteLocation, uploadImage } from '../data/mockData';
-import { Home, Edit2, Trash2, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { Home, Edit2, Trash2, CheckCircle2, AlertCircle, X, Heart } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Admin = () => {
   const [memories, setMemories] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
 
@@ -101,7 +100,6 @@ const Admin = () => {
   };
 
   const submitMemory = async () => {
-    setLoading(true);
     try {
       let finalImageUrl = memoryForm.imageUrl;
       if (memoryForm.imageFile) {
@@ -112,18 +110,16 @@ const Admin = () => {
 
       if (memoryForm.id) {
         await updateMemory(payload);
-        showToast('Cập nhật kỷ niệm thành công!');
+        showToast('Cập nhật kỷ niệm thành công! 💖');
       } else {
         await addMemory(payload);
-        showToast('Thêm kỷ niệm thành công!');
+        showToast('Thêm kỷ niệm thành công! ✨');
       }
       
       await loadData();
       setMemoryForm({ id: null, title: '', date: '', description: '', icon: 'Heart', imageUrl: '', imageFile: null });
     } catch (error) {
-      showToast('Có lỗi xảy ra: ' + error.message, 'error');
-    } finally {
-      setLoading(false);
+      showToast('Có lỗi xảy ra rồi Tũn ơi: ' + error.message, 'error');
     }
   };
 
@@ -144,16 +140,14 @@ const Admin = () => {
   };
 
   const handleDeleteMemory = (id) => {
-    showConfirm('Bạn có chắc chắn muốn XÓA kỷ niệm này không? Việc này không thể hoàn tác.', async () => {
-      setLoading(true);
+    showConfirm('Tũn yêu có chắc muốn XÓA kỷ niệm này không? Huhu 🥺', async () => {
       try {
         await deleteMemory(id);
         await loadData();
-        showToast('Đã xóa kỷ niệm', 'success');
+        showToast('Đã xóa kỷ niệm rồi nè!', 'success');
       } catch (err) {
-        showToast('Lỗi khi xóa: ' + err.message, 'error');
+        showToast('Lỗi khi xóa rồi Tũn ơi: ' + err.message, 'error');
       }
-      setLoading(false);
     });
   };
 
@@ -181,7 +175,6 @@ const Admin = () => {
   };
 
   const submitLocation = async () => {
-    setLoading(true);
     try {
       const finalImages = [];
       const filesToUpload = locationForm.imageFiles || [];
@@ -204,10 +197,10 @@ const Admin = () => {
 
       if (locationForm.id) {
         await updateLocation(payload);
-        showToast('Cập nhật địa điểm thành công!');
+        showToast('Cập nhật địa điểm thành công! 💖');
       } else {
         await addLocation(payload);
-        showToast('Thêm địa điểm thành công!');
+        showToast('Thêm địa điểm thành công! ✨');
       }
       
       await loadData();
@@ -215,9 +208,7 @@ const Admin = () => {
       setSelectedProv("");
       setSelectedDist("");
     } catch (error) {
-      showToast('Có lỗi xảy ra: ' + error.message, 'error');
-    } finally {
-      setLoading(false);
+      showToast('Có lỗi xảy ra rồi Tũn ơi: ' + error.message, 'error');
     }
   };
 
@@ -240,16 +231,14 @@ const Admin = () => {
   };
 
   const handleDeleteLocation = (id) => {
-    showConfirm('Bạn có chắc chắn muốn XÓA địa điểm này không?', async () => {
-      setLoading(true);
+    showConfirm('Tũn yêu có chắc muốn XÓA địa điểm này không? Huhu 🥺', async () => {
       try {
         await deleteLocation(id);
         await loadData();
-        showToast('Đã xóa địa điểm', 'success');
+        showToast('Đã xóa địa điểm rồi nè!', 'success');
       } catch(err) {
-        showToast('Lỗi khi xóa: ' + err.message, 'error');
+        showToast('Lỗi khi xóa rồi Tũn ơi: ' + err.message, 'error');
       }
-      setLoading(false);
     });
   };
 
@@ -260,12 +249,17 @@ const Admin = () => {
       <AnimatePresence>
         {toast.show && (
           <motion.div 
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className={`fixed top-6 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl font-medium ${toast.type === 'success' ? 'bg-white text-emerald-600 border-l-4 border-emerald-500' : 'bg-white text-rose-600 border-l-4 border-rose-500'}`}
+            initial={{ opacity: 0, scale: 0.5, y: -100 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: -100 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className={`fixed top-8 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-3 px-8 py-4 rounded-2xl shadow-2xl font-bold ${
+              toast.type === 'success' 
+                ? 'bg-rose-50 text-rose-500 border-2 border-rose-200' 
+                : 'bg-white text-rose-600 border-2 border-rose-500 shadow-rose-200'
+            }`}
           >
-            {toast.type === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+            {toast.type === 'success' ? <Heart className="w-6 h-6 fill-rose-500" /> : <AlertCircle className="w-6 h-6" />}
             {toast.message}
           </motion.div>
         )}
@@ -278,49 +272,48 @@ const Admin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-[10000] bg-rose-900/20 backdrop-blur-md flex items-center justify-center p-4"
           >
             <motion.div 
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl border-4 border-rose-100 relative overflow-hidden"
             >
-              <div className="flex items-center gap-4 text-rose-500 mb-4">
-                <div className="bg-rose-100 p-3 rounded-full"><AlertCircle className="w-6 h-6" /></div>
-                <h3 className="text-xl font-bold text-gray-900">Xác nhận</h3>
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Heart className="w-24 h-24 rotate-12" />
               </div>
-              <p className="text-gray-600 mb-8">{confirmDialog.message}</p>
-              <div className="flex gap-3">
+              
+              <div className="flex flex-col items-center text-center gap-4 mb-8">
+                <div className="bg-rose-100 p-4 rounded-full">
+                  <Heart className="w-8 h-8 text-rose-500 fill-rose-500" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-800">Tũn ơi!</h3>
+                <p className="text-gray-600 font-medium leading-relaxed">{confirmDialog.message}</p>
+              </div>
+
+              <div className="flex gap-4">
                 <button 
                   onClick={() => setConfirmDialog({ show: false, message: '', onConfirm: null })} 
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-2xl font-bold transition-all"
                 >
-                  Hủy
+                  Thôi mà
                 </button>
                 <button 
                   onClick={() => {
                     confirmDialog.onConfirm();
                     setConfirmDialog({ show: false, message: '', onConfirm: null });
                   }} 
-                  className="flex-1 px-4 py-2 bg-rose-500 text-white hover:bg-rose-600 rounded-lg font-medium transition-colors shadow-lg shadow-rose-200"
+                  className="flex-1 px-6 py-3 bg-rose-500 text-white hover:bg-rose-600 rounded-2xl font-bold transition-all shadow-lg shadow-rose-200 active:scale-95"
                 >
-                  Đồng ý
+                  Đồng ý ạ
                 </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {loading && (
-        <div className="fixed inset-0 z-[9999] bg-white/70 backdrop-blur-sm flex items-center justify-center">
-          <div className="text-rose-500 font-bold text-xl flex items-center gap-3">
-            <div className="w-6 h-6 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
-            Đang xử lý dữ liệu...
-          </div>
-        </div>
-      )}
 
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
@@ -406,17 +399,7 @@ const Admin = () => {
                 {locationForm.id ? 'Sửa Địa điểm' : 'Thêm Địa điểm (Map)'}
               </h2>
               <form onSubmit={handleLocationSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Tên địa điểm (Hiển thị)</label>
-                  <input 
-                    type="text" 
-                    placeholder="VD: Quán Cafe X, Biển Nha Trang..."
-                    value={locationForm.name} 
-                    onChange={e => setLocationForm({...locationForm, name: e.target.value})} 
-                    className="mt-1 w-full p-2 border rounded-lg focus:ring-violet-300 focus:border-violet-300" 
-                    required 
-                  />
-                </div>
+
 
                 <div className="bg-violet-50/50 p-4 rounded-xl border border-violet-100 space-y-4">
                   <div className="flex items-center gap-2 mb-1">
@@ -432,6 +415,7 @@ const Admin = () => {
                         onChange={e => {
                           setSelectedProv(e.target.value);
                           setSelectedDist("");
+                          setLocationForm(prev => ({...prev, name: e.target.value}));
                           fetchCoordinates(e.target.value); // silent fetch
                         }} 
                         className="w-full p-2.5 border border-white rounded-lg bg-white shadow-sm focus:ring-violet-300 focus:border-violet-300 text-sm outline-none" 
@@ -449,6 +433,7 @@ const Admin = () => {
                         value={selectedDist}
                         onChange={e => {
                           setSelectedDist(e.target.value);
+                          setLocationForm(prev => ({...prev, name: `${e.target.value}, ${selectedProv}`}));
                           fetchCoordinates(`${e.target.value}, ${selectedProv}`); // silent fetch
                         }} 
                         disabled={!selectedProv}

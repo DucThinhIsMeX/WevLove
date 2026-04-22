@@ -75,7 +75,7 @@ export const getMemories = async () => {
   const { data, error } = await supabase
     .from('memories')
     .select('*')
-    .order('created_at', { ascending: true });
+    .order('date', { ascending: true });
     
   if (error) {
     console.error('Error fetching memories:', error);
