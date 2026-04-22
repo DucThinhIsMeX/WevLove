@@ -7,21 +7,25 @@ import ImageGallery from './ImageGallery';
 import { Images, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Custom Heart Icon using divIcon and SVG
+// Custom Cute Love Pin Icon
 const heartSvg = `
-<div class="heart-marker">
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#f43f5e" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-  </svg>
-  <div class="heart-shadow"></div>
+<div class="heart-marker-container">
+  <div class="heart-pin">
+    <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="#ff4d6d" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+    </svg>
+    <div class="heart-sparkle s1">✨</div>
+    <div class="heart-sparkle s2">✨</div>
+  </div>
+  <div class="heart-pin-shadow"></div>
 </div>`;
 
 const customIcon = new L.divIcon({
   html: heartSvg,
   className: 'custom-leaflet-icon',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40]
 });
 
 const Map = () => {

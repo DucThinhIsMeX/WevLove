@@ -3,23 +3,24 @@ import { motion } from 'framer-motion';
 import { Heart, Plane, Star, Gift } from 'lucide-react';
 import { getMemories } from '../data/mockData';
 
-const iconMap = {
-  Heart: <Heart className="w-5 h-5 text-white" />,
-  Plane: <Plane className="w-5 h-5 text-white" />,
-  Star: <Star className="w-5 h-5 text-white" />,
-  Gift: <Gift className="w-5 h-5 text-white" />
+const iconConfig = {
+  Heart: { icon: <Heart className="w-5 h-5 text-white" />, color: 'bg-rose-400 shadow-rose-200' },
+  Plane: { icon: <Plane className="w-5 h-5 text-white" />, color: 'bg-sky-400 shadow-sky-200' },
+  Star: { icon: <Star className="w-5 h-5 text-white" />, color: 'bg-amber-400 shadow-amber-200' },
+  Gift: { icon: <Gift className="w-5 h-5 text-white" />, color: 'bg-purple-400 shadow-purple-200' }
 };
 
 const TimelineItem = ({ memory, index }) => {
   const isEven = index % 2 === 0;
+  const config = iconConfig[memory.icon] || iconConfig.Heart;
 
   return (
     <div className={`mb-16 flex justify-between items-center w-full ${isEven ? 'flex-row-reverse' : 'flex-row'}`}>
       <div className="hidden md:block w-5/12"></div>
       
       <div className="z-20">
-        <div className="flex items-center justify-center w-10 h-10 bg-rose-500 rounded-full shadow-lg shadow-rose-200">
-          {iconMap[memory.icon] || <Heart className="w-5 h-5 text-white" />}
+        <div className={`flex items-center justify-center w-12 h-12 ${config.color} rounded-full shadow-lg transform hover:scale-125 transition-transform duration-300`}>
+          {config.icon}
         </div>
       </div>
       
