@@ -74,14 +74,29 @@ export const initData = () => {
 export const getMemories = async () => {
   const { data, error } = await supabase
     .from('memories')
-    .select('*')
-    .order('date', { ascending: true });
+    .select('*');
     
   if (error) {
     console.error('Error fetching memories:', error);
     return [];
   }
-  return data;
+  
+  // Sort by date assuming DD/MM/YYYY format
+  return data.sort((a, b) => {
+    const parseDate = (dateStr) => {
+      if (!dateStr) return 0;
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        // Convert DD/MM/YYYY to YYYY-MM-DD for parsing
+        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
+      }
+      // Fallback for other formats (e.g., just year or natural language)
+      const fallbackDate = new Date(dateStr).getTime();
+      return isNaN(fallbackDate) ? 0 : fallbackDate;
+    };
+    
+    return parseDate(a.date) - parseDate(b.date);
+  });
 };
 
 export const addMemory = async (memory) => {
