@@ -47,9 +47,14 @@ const playTone = (frequency, type, duration, vol) => {
     osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
     
     // Smooth attack and release to avoid clicking noises
+    // Better envelope for loudness
+    const attack = 0.02;
+    const decay = duration - attack;
+    
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + attack);
+    gainNode.gain.linearRampToValueAtTime(vol * 0.5, audioCtx.currentTime + attack + decay * 0.5);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
     
     osc.connect(gainNode);
     gainNode.connect(audioCtx.destination);
@@ -62,8 +67,8 @@ const playTone = (frequency, type, duration, vol) => {
 };
 
 export const playHover = () => {
-  // A soft, high-pitched gentle pop
-  playTone(800, 'sine', 0.05, 0.9);
+  // A clearer, slightly longer pop
+  playTone(800, 'triangle', 0.1, 0.8);
 };
 
 export const playClick = () => {
@@ -74,27 +79,28 @@ export const playClick = () => {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
+    const duration = 0.15;
     osc.type = 'triangle';
-    // Frequency drop for a bubble "pop" effect
-    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.08);
+    osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + duration);
     
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+    gainNode.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.02);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + duration * 0.6);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
     
     osc.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     
     osc.start(audioCtx.currentTime);
-    osc.stop(audioCtx.currentTime + 0.1);
+    osc.stop(audioCtx.currentTime + duration);
   } catch (e) {}
 };
 
 export const playSuccess = () => {
   // A soft chime (two quick notes C5 -> E5)
-  playTone(523.25, 'triangle', 0.15, 0.9); 
-  setTimeout(() => playTone(659.25, 'triangle', 0.3, 0.9), 100); 
+  playTone(523.25, 'triangle', 0.25, 0.8); 
+  setTimeout(() => playTone(659.25, 'triangle', 0.4, 0.8), 120); 
 };
 
 export const playError = () => {
