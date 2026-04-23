@@ -1,4 +1,5 @@
 let audioCtx = null;
+let isUnlocked = false;
 
 const initAudio = () => {
   if (typeof window === 'undefined') return;
@@ -9,6 +10,31 @@ const initAudio = () => {
     audioCtx.resume();
   }
 };
+
+const unlockAudio = () => {
+  if (isUnlocked) return;
+  initAudio();
+  if (audioCtx) {
+    try {
+      // Play silent buffer to unlock audio engine on iOS
+      const buffer = audioCtx.createBuffer(1, 1, 22050);
+      const source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioCtx.destination);
+      source.start(0);
+      isUnlocked = true;
+    } catch (e) {}
+    
+    // Cleanup listeners
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  }
+};
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('touchstart', unlockAudio, { passive: true });
+  document.addEventListener('click', unlockAudio, { passive: true });
+}
 
 const playTone = (frequency, type, duration, vol) => {
   try {
