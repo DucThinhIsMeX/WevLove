@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMemories, getLocations, addMemory, updateMemory, deleteMemory, addLocation, updateLocation, deleteLocation, uploadImage } from '../data/mockData';
-import { Home, Edit2, Trash2, CheckCircle2, AlertCircle, X, Heart } from 'lucide-react';
+import { Home, Edit2, Trash2, CheckCircle2, AlertCircle, X, Heart, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import ImageUpload from './ImageUpload';
 
 const Admin = () => {
   const [memories, setMemories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
+  const [isUploading, setIsUploading] = useState(false);
 
   // Vietnam Administrative Data
   const [vnData, setVnData] = useState([]);
@@ -91,16 +93,22 @@ const Admin = () => {
   };
 
   // ---- MEMORY HANDLERS ----
-  const handleMemoryImageSelect = async (e) => {
-    const file = e.target.files[0];
+  const handleMemoryImagesChange = async (files) => {
+    const file = files[0];
     if (file) {
-      const { url, file: resizedFile } = await resizeImage(file);
-      setMemoryForm({ ...memoryForm, imageUrl: url, imageFile: resizedFile });
+      setIsUploading(true);
+      try {
+        const { url, file: resizedFile } = await resizeImage(file);
+        setMemoryForm(prev => ({ ...prev, imageUrl: url, imageFile: resizedFile }));
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
   const submitMemory = async () => {
     try {
+      setIsUploading(true);
       let finalImageUrl = memoryForm.imageUrl;
       if (memoryForm.imageFile) {
         finalImageUrl = await uploadImage(memoryForm.imageFile);
@@ -120,6 +128,8 @@ const Admin = () => {
       setMemoryForm({ id: null, title: '', date: '', description: '', icon: 'Heart', imageUrl: '', imageFile: null });
     } catch (error) {
       showToast('Có lỗi xảy ra rồi Tũn ơi: ' + error.message, 'error');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -152,29 +162,47 @@ const Admin = () => {
   };
 
   // ---- LOCATION HANDLERS ----
-  const handleMultipleImageSelect = async (e) => {
-    const files = Array.from(e.target.files);
+  const handleLocationImagesChange = async (files) => {
     if (!files.length) return;
     
-    const processedFiles = await Promise.all(files.map(f => resizeImage(f)));
-    setLocationForm(prev => ({
-      ...prev,
-      images: [...prev.images, ...processedFiles.map(pf => pf.url)],
-      imageFiles: [...(prev.imageFiles || []), ...processedFiles.map(pf => pf.file)]
-    }));
+    setIsUploading(true);
+    try {
+      const processedFiles = await Promise.all(files.map(f => resizeImage(f)));
+      setLocationForm(prev => ({
+        ...prev,
+        images: [...prev.images, ...processedFiles.map(pf => pf.url)],
+        imageFiles: [...(prev.imageFiles || []), ...processedFiles.map(pf => pf.file)]
+      }));
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const removeLocationImage = (indexToRemove) => {
     setLocationForm(prev => {
+      const isNewBlob = prev.images[indexToRemove].startsWith('blob:');
+      
+      // If it's a new blob, we also need to remove it from imageFiles
+      let newImageFiles = prev.imageFiles || [];
+      if (isNewBlob) {
+        // Find which file index it corresponds to
+        const blobUrlToRemove = prev.images[indexToRemove];
+        // This logic is a bit tricky if multiple blobs are added.
+        // Let's simplify: imageFiles should align with the 'blob:' entries in images.
+        const blobIndex = prev.images.slice(0, indexToRemove).filter(img => img.startsWith('blob:')).length;
+        newImageFiles = (prev.imageFiles || []).filter((_, idx) => idx !== blobIndex);
+      }
+
       return {
         ...prev,
         images: prev.images.filter((_, idx) => idx !== indexToRemove),
-        imageFiles: prev.imageFiles || []
+        imageFiles: newImageFiles
       };
     });
   };
 
   const submitLocation = async () => {
+    setIsUploading(true);
     try {
       const finalImages = [];
       const filesToUpload = locationForm.imageFiles || [];
@@ -209,6 +237,8 @@ const Admin = () => {
       setSelectedDist("");
     } catch (error) {
       showToast('Có lỗi xảy ra rồi Tũn ơi: ' + error.message, 'error');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -313,6 +343,22 @@ const Admin = () => {
             </motion.div>
           </motion.div>
         )}
+      {/* Loading Overlay */}
+      <AnimatePresence>
+        {isUploading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[20000] bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center"
+          >
+            <div className="relative">
+              <Loader2 className="w-12 h-12 text-rose-500 animate-spin" />
+              <Heart className="w-6 h-6 text-rose-300 absolute inset-0 m-auto animate-pulse" />
+            </div>
+            <p className="mt-4 font-bold text-rose-500 animate-pulse">Đang xử lý ảnh cho Tũn nè...</p>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       <div className="max-w-6xl mx-auto">
@@ -353,9 +399,13 @@ const Admin = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Upload Ảnh mới (bỏ qua nếu giữ ảnh cũ)</label>
-                  <input type="file" accept="image/*" onChange={handleMemoryImageSelect} className="mt-1 w-full" required={!memoryForm.imageUrl} />
-                  {memoryForm.imageUrl && <img src={memoryForm.imageUrl} alt="preview" className="mt-2 w-full h-32 object-cover rounded-lg" />}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh kỷ niệm</label>
+                  <ImageUpload 
+                    images={memoryForm.imageUrl ? [memoryForm.imageUrl] : []}
+                    onChange={handleMemoryImagesChange}
+                    onRemove={() => setMemoryForm({...memoryForm, imageUrl: '', imageFile: null})}
+                    label="Chọn ảnh kỷ niệm"
+                  />
                 </div>
                 <div className="flex gap-2">
                   <button type="submit" className="flex-1 bg-rose-500 text-white py-2 rounded-lg hover:bg-rose-600 font-medium shadow-md shadow-rose-200">
@@ -453,26 +503,14 @@ const Admin = () => {
                   <textarea value={locationForm.note} onChange={e => setLocationForm({...locationForm, note: e.target.value})} className="mt-1 w-full p-2 border rounded-lg focus:ring-violet-300 focus:border-violet-300" rows="2" required placeholder="VD: Nơi lưu giữ nụ hôn đầu tiên..."></textarea>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Thêm Hình ảnh (Có thể chọn nhiều)</label>
-                  <input type="file" accept="image/*" multiple onChange={handleMultipleImageSelect} className="mt-1 w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 transition-colors" />
-                  
-                  {/* Gallery Preview */}
-                  {locationForm.images && locationForm.images.length > 0 && (
-                    <div className="mt-4 grid grid-cols-3 gap-3">
-                      {locationForm.images.map((imgSrc, idx) => (
-                        <div key={idx} className="relative group aspect-square">
-                          <img src={imgSrc} alt="preview" className="w-full h-full object-cover rounded-xl shadow-sm" />
-                          <button 
-                            type="button" 
-                            onClick={() => removeLocationImage(idx)}
-                            className="absolute -top-2 -right-2 bg-white text-rose-500 p-1.5 rounded-full opacity-0 group-hover:opacity-100 shadow-md transition-all hover:bg-rose-50 hover:scale-110"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh (Có thể chọn nhiều)</label>
+                  <ImageUpload 
+                    multiple
+                    images={locationForm.images}
+                    onChange={handleLocationImagesChange}
+                    onRemove={removeLocationImage}
+                    label="Tải ảnh lên"
+                  />
                 </div>
                 <div className="flex gap-2 mt-6">
                   <button type="submit" className="flex-1 bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-700 font-medium shadow-md shadow-violet-200">
