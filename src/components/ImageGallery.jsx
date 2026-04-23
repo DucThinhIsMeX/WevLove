@@ -6,12 +6,12 @@ const ImageGallery = ({ images, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextImage = useCallback(() => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => (prev === images?.length - 1 ? 0 : prev + 1));
+  }, [images]);
 
   const prevImage = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => (prev === 0 ? images?.length - 1 : prev - 1));
+  }, [images]);
 
   // Handle keyboard navigation
   useEffect(() => {
