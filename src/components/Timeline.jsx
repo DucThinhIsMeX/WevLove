@@ -15,7 +15,7 @@ const TimelineItem = ({ memory, index }) => {
   const config = iconConfig[memory.icon] || iconConfig.Heart;
 
   return (
-    <div className={`mb-16 flex justify-between items-center w-full ${isEven ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div className={`mb-16 flex items-center w-full flex-row md:justify-between ${isEven ? 'md:flex-row-reverse' : ''}`}>
       <div className="hidden md:block w-5/12"></div>
       
       <div className="z-20">

@@ -4,7 +4,6 @@ import Hero from './components/Hero';
 import Timeline from './components/Timeline';
 import Map from './components/Map';
 import Admin from './components/Admin';
-import LandscapePrompt from './components/LandscapePrompt';
 import { initData } from './data/mockData';
 import { Settings } from 'lucide-react';
 
@@ -31,16 +30,14 @@ const MainPage = () => (
 
 function App() {
   return (
-    <LandscapePrompt>
-      <BrowserRouter>
-        <div className="font-sans antialiased text-gray-900 min-h-screen selection:bg-rose-200 selection:text-rose-900">
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </LandscapePrompt>
+    <BrowserRouter>
+      <div className="font-sans antialiased text-gray-900 min-h-screen selection:bg-rose-200 selection:text-rose-900">
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

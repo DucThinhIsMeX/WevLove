@@ -75,7 +75,7 @@ const Map = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="h-[550px] w-full rounded-3xl overflow-hidden shadow-2xl shadow-rose-200/40 border-8 border-white relative"
+            className="h-[400px] md:h-[550px] w-full rounded-3xl overflow-hidden shadow-2xl shadow-rose-200/40 border-8 border-white relative"
           >
             <MapContainer center={center} zoom={6} scrollWheelZoom={false} className="h-full w-full">
               <TileLayer
