@@ -63,7 +63,7 @@ const playTone = (frequency, type, duration, vol) => {
 
 export const playHover = () => {
   // A soft, high-pitched gentle pop
-  playTone(800, 'sine', 0.05, 0.08);
+  playTone(800, 'sine', 0.05, 0.3);
 };
 
 export const playClick = () => {
@@ -74,13 +74,13 @@ export const playClick = () => {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
-    osc.type = 'sine';
+    osc.type = 'triangle';
     // Frequency drop for a bubble "pop" effect
     osc.frequency.setValueAtTime(600, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.08);
     
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
     
     osc.connect(gainNode);
@@ -93,12 +93,12 @@ export const playClick = () => {
 
 export const playSuccess = () => {
   // A soft chime (two quick notes C5 -> E5)
-  playTone(523.25, 'sine', 0.15, 0.1); 
-  setTimeout(() => playTone(659.25, 'sine', 0.3, 0.1), 100); 
+  playTone(523.25, 'triangle', 0.15, 0.4); 
+  setTimeout(() => playTone(659.25, 'triangle', 0.3, 0.4), 100); 
 };
 
 export const playError = () => {
   // A low dull double beep
-  playTone(200, 'triangle', 0.15, 0.15);
-  setTimeout(() => playTone(150, 'triangle', 0.2, 0.15), 150);
+  playTone(200, 'triangle', 0.15, 0.5);
+  setTimeout(() => playTone(150, 'triangle', 0.2, 0.5), 150);
 };
