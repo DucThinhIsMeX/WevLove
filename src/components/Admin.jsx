@@ -157,7 +157,12 @@ const Admin = () => {
 
   const handleEditMemory = (mem) => {
     setMemoryForm({ ...mem, imageFile: null });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const yOffset = -80; // slightly above
+    const element = document.getElementById('memory-form');
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
   };
 
   const handleDeleteMemory = (id) => {
@@ -267,7 +272,12 @@ const Admin = () => {
     setLocationForm({ ...loc, imageFiles: [] });
     setSelectedProv("");
     setSelectedDist("");
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const yOffset = -80; // slightly above
+    const element = document.getElementById('location-form');
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
   };
 
   const handleDeleteLocation = (id) => {
@@ -384,7 +394,7 @@ const Admin = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* ---- TIMELINE SECTION ---- */}
           <div className="space-y-8">
-            <div className="bg-white p-6 rounded-2xl shadow-xl">
+            <div id="memory-form" className="bg-white p-6 rounded-2xl shadow-xl">
               <h2 className="text-xl font-bold mb-4 text-rose-500 border-b pb-2">
                 {memoryForm.id ? 'Sửa Kỷ niệm' : 'Thêm Kỷ niệm (Timeline)'}
               </h2>
@@ -456,7 +466,7 @@ const Admin = () => {
 
           {/* ---- MAP SECTION ---- */}
           <div className="space-y-8">
-            <div className="bg-white p-6 rounded-2xl shadow-xl">
+            <div id="location-form" className="bg-white p-6 rounded-2xl shadow-xl">
               <h2 className="text-xl font-bold mb-4 text-violet-600 border-b pb-2">
                 {locationForm.id ? 'Sửa Địa điểm' : 'Thêm Địa điểm (Map)'}
               </h2>
