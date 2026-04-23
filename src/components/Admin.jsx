@@ -30,18 +30,29 @@ const Admin = () => {
   };
 
   const loadData = async () => {
-    const mems = await getMemories();
-    const locs = await getLocations();
-    setMemories(mems);
-    setLocations(locs);
+    try {
+      const mems = await getMemories();
+      const locs = await getLocations();
+      setMemories(mems);
+      setLocations(locs);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     loadData();
-    fetch('https://provinces.open-api.vn/api/?depth=2')
-      .then(res => res.json())
-      .then(data => setVnData(data))
-      .catch(err => console.error("Failed to load VN Data", err));
+    const fetchVnData = async () => {
+      try {
+        const res = await fetch('https://provinces.open-api.vn/api/?depth=2');
+        const data = await res.json();
+        setVnData(data);
+      } catch (err) {
+        console.error("Failed to load VN Data", err);
+      }
+    };
+    fetchVnData();
+     
   }, []);
 
   const resizeImage = (file, maxWidth = 1200) => {
@@ -186,7 +197,6 @@ const Admin = () => {
       let newImageFiles = prev.imageFiles || [];
       if (isNewBlob) {
         // Find which file index it corresponds to
-        const blobUrlToRemove = prev.images[indexToRemove];
         // This logic is a bit tricky if multiple blobs are added.
         // Let's simplify: imageFiles should align with the 'blob:' entries in images.
         const blobIndex = prev.images.slice(0, indexToRemove).filter(img => img.startsWith('blob:')).length;
@@ -343,6 +353,8 @@ const Admin = () => {
             </motion.div>
           </motion.div>
         )}
+      </AnimatePresence>
+
       {/* Loading Overlay */}
       <AnimatePresence>
         {isUploading && (

@@ -31,13 +31,11 @@ const customIcon = new L.divIcon({
 const Map = () => {
   const [locations, setLocations] = useState([]);
   const [galleryImages, setGalleryImages] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       const data = await getLocations();
       setLocations(data);
-      setLoading(false);
     };
     loadData();
   }, []);

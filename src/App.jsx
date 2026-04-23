@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Hero from './components/Hero';
 import Timeline from './components/Timeline';
 import Map from './components/Map';
 import Admin from './components/Admin';
-import { initData } from './data/mockData';
 import { Settings } from 'lucide-react';
 
 const MainPage = () => (
