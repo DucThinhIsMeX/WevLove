@@ -6,6 +6,7 @@ import { getLocations } from '../data/mockData';
 import ImageGallery from './ImageGallery';
 import { Images, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { playHover, playClick } from '../utils/audio';
 
 // Custom Cute Love Pin Icon
 const heartSvg = `
@@ -86,7 +87,14 @@ const Map = () => {
                 const hasMultipleImages = imagesArray.length > 1;
 
                 return (
-                  <Marker key={loc.id} position={[loc.lat, loc.lng]} icon={customIcon}>
+                  <Marker 
+                    key={loc.id} 
+                    position={[loc.lat, loc.lng]} 
+                    icon={customIcon}
+                    eventHandlers={{
+                      click: () => playClick()
+                    }}
+                  >
                     <Popup className="cute-popup" minWidth={220}>
                       <motion.div 
                         initial={{ opacity: 0, scale: 0.8, y: 10 }}
@@ -103,8 +111,10 @@ const Map = () => {
                         <div 
                           className="relative cursor-pointer group rounded-xl overflow-hidden mb-3 shadow-sm border-2 border-rose-50 hover:border-rose-300 transition-all duration-300"
                           onClick={() => {
+                            playClick();
                             if (imagesArray.length > 0) setGalleryImages(imagesArray);
                           }}
+                          onMouseEnter={playHover}
                         >
                           <img 
                             src={coverImage} 

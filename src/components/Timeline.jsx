@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Plane, Star, Gift } from 'lucide-react';
 import { getMemories } from '../data/mockData';
+import { playHover } from '../utils/audio';
 
 const iconConfig = {
   Heart: { icon: <Heart className="w-5 h-5 text-white" />, color: 'bg-rose-400 shadow-rose-200' },
@@ -29,6 +30,7 @@ const TimelineItem = ({ memory, index }) => {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6, type: "spring" }}
+        onMouseEnter={playHover}
         className="w-full md:w-5/12 bg-white rounded-2xl shadow-xl shadow-pink-100/50 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 ml-6 md:ml-0"
       >
         <img 

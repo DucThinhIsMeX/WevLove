@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { playClick, playHover } from '../utils/audio';
 
 const ImageGallery = ({ images, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,7 +37,8 @@ const ImageGallery = ({ images, onClose }) => {
       >
         {/* Close Button */}
         <button 
-          onClick={onClose}
+          onClick={() => { playClick(); onClose(); }}
+          onMouseEnter={playHover}
           className="absolute top-6 right-6 text-white/70 hover:text-white bg-black/30 hover:bg-black/50 p-2 rounded-full transition-all z-50"
         >
           <X className="w-8 h-8" />
@@ -47,7 +49,8 @@ const ImageGallery = ({ images, onClose }) => {
           
           {images.length > 1 && (
             <button 
-              onClick={prevImage}
+              onClick={() => { playClick(); prevImage(); }}
+              onMouseEnter={playHover}
               className="absolute left-4 md:left-10 text-white/70 hover:text-white bg-black/30 hover:bg-black/50 p-3 rounded-full transition-all z-50"
             >
               <ChevronLeft className="w-8 h-8" />
@@ -66,7 +69,8 @@ const ImageGallery = ({ images, onClose }) => {
 
           {images.length > 1 && (
             <button 
-              onClick={nextImage}
+              onClick={() => { playClick(); nextImage(); }}
+              onMouseEnter={playHover}
               className="absolute right-4 md:right-10 text-white/70 hover:text-white bg-black/30 hover:bg-black/50 p-3 rounded-full transition-all z-50"
             >
               <ChevronRight className="w-8 h-8" />
@@ -85,7 +89,8 @@ const ImageGallery = ({ images, onClose }) => {
               {images.map((img, idx) => (
                 <button 
                   key={idx} 
-                  onClick={() => setCurrentIndex(idx)}
+                  onClick={() => { playClick(); setCurrentIndex(idx); }}
+                  onMouseEnter={playHover}
                   className={`relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${idx === currentIndex ? 'border-rose-500 scale-110 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'}`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt="" />

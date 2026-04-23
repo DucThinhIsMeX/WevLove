@@ -4,6 +4,7 @@ import { getMemories, getLocations, addMemory, updateMemory, deleteMemory, addLo
 import { Home, Edit2, Trash2, CheckCircle2, AlertCircle, X, Heart, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ImageUpload from './ImageUpload';
+import { playHover, playClick, playSuccess, playError } from '../utils/audio';
 
 const Admin = () => {
   const [memories, setMemories] = useState([]);
@@ -21,6 +22,8 @@ const Admin = () => {
   const [locationForm, setLocationForm] = useState({ id: null, name: '', lat: 10.8231, lng: 106.6297, note: '', images: [], imageFiles: [] });
 
   const showToast = (message, type = 'success') => {
+    if (type === 'success') playSuccess();
+    else playError();
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
   };
@@ -345,16 +348,19 @@ const Admin = () => {
 
               <div className="flex gap-4">
                 <button 
-                  onClick={() => setConfirmDialog({ show: false, message: '', onConfirm: null })} 
+                  onClick={() => { playClick(); setConfirmDialog({ show: false, message: '', onConfirm: null }); }} 
+                  onMouseEnter={playHover}
                   className="flex-1 px-6 py-3 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-2xl font-bold transition-all"
                 >
                   Thôi mà
                 </button>
                 <button 
                   onClick={() => {
+                    playClick();
                     confirmDialog.onConfirm();
                     setConfirmDialog({ show: false, message: '', onConfirm: null });
                   }} 
+                  onMouseEnter={playHover}
                   className="flex-1 px-6 py-3 bg-rose-500 text-white hover:bg-rose-600 rounded-2xl font-bold transition-all shadow-lg shadow-rose-200 active:scale-95"
                 >
                   Đồng ý ạ
